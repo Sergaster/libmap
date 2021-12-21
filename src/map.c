@@ -138,7 +138,7 @@ static int map_insert_aux(MAP *map, void *k, uint64_t klen, void *v, uint64_t vl
 	int j;
 	uint32_t h;
 
-	if (v == NULL && vlen == 0)
+	if (v == NULL && vlen != 0)
 		return -1;
 	h = map_hash(k, klen);
 	b = &map->table[h % map->size];
