@@ -41,7 +41,7 @@ typedef struct rs_map_t {
 	rs_bucket *table;
 } MAP;
 
-MAP *rs_map_new0(void);
+MAP *map_new0(void);
 void map_free(MAP *map);
 
 int map_select(MAP *map, void *k, uint64_t klen, void **v, uint64_t *vlen);
