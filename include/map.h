@@ -17,8 +17,8 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef RS_MAP_H
-#define RS_MAP_H
+#ifndef MAP_MAP_H
+#define MAP_MAP_H
 
 #include <stdint.h>
 
