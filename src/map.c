@@ -22,7 +22,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "map.h"
+#include <map/map.h>
 
 #define CDB_HASHSTART	5381
 

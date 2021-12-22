@@ -19,7 +19,7 @@
 
 #include <endian.h>
 
-#include "misc.h"
+#include <map/misc.h>
 
 int map_uv_select(MAP *map, uint64_t k, void **v, uint64_t *vlen)
 {
