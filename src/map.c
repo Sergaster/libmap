@@ -53,7 +53,7 @@ static const uint32_t primes_sizes[] = {
 #define LOAD_FACTOR		1
 #define S_ARRAY_SIZE(x)		(sizeof(x) / sizeof(x[0]))
 
-MAP *map_new(int index)
+MAP *map_new(int index, map_vfree_cb cb)
 {
 	MAP *map;
 	rs_bucket *b;
@@ -70,6 +70,7 @@ MAP *map_new(int index)
 	map->size = size;
 	map->count = 0;
 	map->table = calloc(size, sizeof(*map->table));
+	map->free = cb;
 	if (map->table == NULL)
 		goto err;
 	for (i = 0; i < size; i++) {
@@ -83,11 +84,6 @@ err:
 	return NULL;
 }
 
-MAP *map_new0(void)
-{
-	return map_new(0);
-}
-
 void map_free(MAP *map)
 {
 	rs_bucket *b;
@@ -99,8 +95,12 @@ void map_free(MAP *map)
 		for (j = 0; j < b->count; j++) {
 			kv = &b->arr[j];
 			free(kv->key);
-			if (kv->val_len)
-				free(kv->value);
+			if (kv->value) {
+				if (map->free)
+					map->free(kv->value);
+				else if (kv->val_len)
+					free(kv->value);
+			}
 		}
 		free(b->arr);
 	}
@@ -190,7 +190,7 @@ static void map_transform(MAP *map)
 		index = S_ARRAY_SIZE(primes_sizes) - 1;
 	if (index == map->index)	// the biggest size
 		return;
-	map2 = map_new(index);
+	map2 = map_new(index, map->free);
 	if (map2 == NULL) /* the map is unoptimized left */
 		return;
 	for (i = 0; i < map->size; i++) {
@@ -238,6 +238,8 @@ int map_update(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen)
 				free(kv->value);
 				kv->value = s;
 			} else {
+				if (map->free)
+					map->free(kv->value);
 				kv->value = v;
 			}
 			kv->val_len = vlen;
@@ -260,8 +262,12 @@ int map_delete(MAP *map, void *k, uint64_t klen)
 		kv = &b->arr[j];
 		if (klen == kv->key_len && !memcmp(k, kv->key, klen)) {
 			free(kv->key);
-			if (kv->val_len)
-				free(kv->value);
+			if (kv->value) {
+				if (map->free)
+					map->free(kv->value);
+				else if (kv->val_len)
+					free(kv->value);
+			}
 			memmove(kv, kv + 1, (b->count - j - 1) * sizeof(*kv));
 			b->count--;
 			map->count--;
@@ -281,7 +287,7 @@ int map_foreach(MAP *map, map_foreach_cb cb, void *user)
 		b = &map->table[i];
 		for (j = 0; j < b->count; j++) {
 			kv = &b->arr[j];
-			if (cb(map, kv->key, kv->key_len, kv->value, kv->val_len, user))
+			if (cb(kv->key, kv->key_len, kv->value, kv->val_len, user))
 				return -1;
 		}
 	}

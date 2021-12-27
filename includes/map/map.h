@@ -34,22 +34,35 @@ typedef struct rs_bucket_t {
 	uint64_t count;
 } rs_bucket;
 
+typedef void (* map_vfree_cb)(void *);
+
 typedef struct rs_map_t {
 	int index;
 	int size;
 	uint64_t count;
 	rs_bucket *table;
+	map_vfree_cb free;
 } MAP;
 
-MAP *map_new0(void);
+MAP *map_new(int index, map_vfree_cb cb);
 void map_free(MAP *map);
+
+static inline MAP *map_new0(void)
+{
+	return map_new(0, NULL);
+}
+
+static inline MAP *map_newf(map_vfree_cb cb)
+{
+	return map_new(0, cb);
+}
 
 int map_select(MAP *map, void *k, uint64_t klen, void **v, uint64_t *vlen);
 int map_insert(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen);
 int map_update(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen);
 int map_delete(MAP *map, void *k, uint64_t klen);
 
-typedef int (*map_foreach_cb) (MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen, void *user);
+typedef int (*map_foreach_cb) (void *k, uint64_t klen, void *v, uint64_t vlen, void *user);
 int map_foreach(MAP *map, map_foreach_cb cb, void *user);
 
 #endif
