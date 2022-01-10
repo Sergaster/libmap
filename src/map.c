@@ -84,7 +84,7 @@ err:
 	return NULL;
 }
 
-void map_free(MAP *map)
+void map_purge(MAP *map)
 {
 	rs_bucket *b;
 	rs_keyval *kv;
@@ -101,9 +101,16 @@ void map_free(MAP *map)
 				else if (kv->val_len)
 					free(kv->value);
 			}
+			b->count--;
+			map->count--;
 		}
-		free(b->arr);
 	}
+	return;
+}
+
+void map_free(MAP *map)
+{
+	map_purge(map);
 	free(map->table);
 	free(map);
 	return;

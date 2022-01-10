@@ -46,6 +46,7 @@ typedef struct rs_map_t {
 
 MAP *map_new(int index, map_vfree_cb cb);
 void map_free(MAP *map);
+void map_purge(MAP *map);
 
 static inline MAP *map_new0(void)
 {
