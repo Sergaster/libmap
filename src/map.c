@@ -116,7 +116,7 @@ void map_free(MAP *map)
 	return;
 }
 
-int map_select(MAP *map, void *k, uint64_t klen, void **v, uint64_t *vlen)
+int map_select(MAP *map, const void *k, uint64_t klen, void **v, uint64_t *vlen)
 {
 	rs_bucket *b;
 	rs_keyval *kv;
@@ -138,7 +138,7 @@ int map_select(MAP *map, void *k, uint64_t klen, void **v, uint64_t *vlen)
 
 static void map_transform(MAP *map);
 
-static int map_insert_aux(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen, bool grow)
+static int map_insert_aux(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen, bool grow)
 {
 	rs_bucket *b;
 	rs_keyval *kv, *arr;
@@ -217,12 +217,12 @@ out:
 	return;
 }
 
-int map_insert(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen)
+int map_insert(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen)
 {
 	return map_insert_aux(map, k, klen, v, vlen, true);
 }
 
-int map_update(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen)
+int map_update(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen)
 {
 	rs_bucket *b;
 	rs_keyval *kv;
@@ -256,7 +256,7 @@ int map_update(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen)
 	return map_insert_aux(map, k, klen, v, vlen, true);
 }
 
-int map_delete(MAP *map, void *k, uint64_t klen)
+int map_delete(MAP *map, const void *k, uint64_t klen)
 {
 	rs_bucket *b;
 	rs_keyval *kv;

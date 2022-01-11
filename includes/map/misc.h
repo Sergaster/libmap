@@ -24,19 +24,19 @@
 
 #include <map/map.h>
 
-static inline int map_sv_select(MAP *map, char *k, void **v, uint64_t *vlen)
+static inline int map_sv_select(MAP *map, const char *k, void **v, uint64_t *vlen)
 {
 	return map_select(map, k, strlen(k) + 1, v, vlen);
 }
-static inline int map_sv_insert(MAP *map, char *k, void *v, uint64_t vlen)
+static inline int map_sv_insert(MAP *map, const char *k, void *v, uint64_t vlen)
 {
 	return map_insert(map, k, strlen(k) + 1, v, vlen);
 }
-static inline int map_sv_update(MAP *map, char *k, void *v, uint64_t vlen)
+static inline int map_sv_update(MAP *map, const char *k, void *v, uint64_t vlen)
 {
 	return map_update(map, k, strlen(k) + 1, v, vlen);
 }
-static inline int map_sv_delete(MAP *map, char *k)
+static inline int map_sv_delete(MAP *map, const char *k)
 {
 	return map_delete(map, k, strlen(k) + 1);
 }

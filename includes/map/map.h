@@ -20,6 +20,7 @@
 #ifndef MAP_MAP_H
 #define MAP_MAP_H
 
+#include <stdlib.h>
 #include <stdint.h>
 
 typedef struct rs_keyval_t {
@@ -58,12 +59,12 @@ static inline MAP *map_newf(map_vfree_cb cb)
 	return map_new(0, cb);
 }
 
-int map_select(MAP *map, void *k, uint64_t klen, void **v, uint64_t *vlen);
-int map_insert(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen);
-int map_update(MAP *map, void *k, uint64_t klen, void *v, uint64_t vlen);
-int map_delete(MAP *map, void *k, uint64_t klen);
+int map_select(MAP *map, const void *k, uint64_t klen, void **v, uint64_t *vlen);
+int map_insert(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen);
+int map_update(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen);
+int map_delete(MAP *map, const void *k, uint64_t klen);
 
-typedef int (*map_foreach_cb) (void *k, uint64_t klen, void *v, uint64_t vlen, void *user);
+typedef int (*map_foreach_cb) (const void *k, uint64_t klen, void *v, uint64_t vlen, void *user);
 int map_foreach(MAP *map, map_foreach_cb cb, void *user);
 
 #endif
