@@ -253,7 +253,7 @@ int map_update(MAP *map, const void *k, uint64_t klen, void *v, uint64_t vlen)
 			return 0;
 		}
 	}
-	return map_insert_aux(map, k, klen, v, vlen, true);
+	return -1;
 }
 
 int map_delete(MAP *map, const void *k, uint64_t klen)
